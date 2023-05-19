@@ -37,6 +37,8 @@ def read_shear_scale(frame, data_loaded):
     # Crop the frame to the ROI
     frame_copy = frame[roi_y:roi_y + roi_height, roi_x:roi_x + roi_width].copy()
 
+    # cv2.imshow('frame_copy', frame_copy)
+
     gray_image = cv2.cvtColor(frame_copy, cv2.COLOR_BGR2GRAY)
 
     # invert the image

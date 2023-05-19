@@ -12,6 +12,9 @@ def detect_pins(image, data_loaded):
     # Crop the image
     image = image[y:y+h, x:x+w]
 
+    # show the cropped image
+    cv2.imshow('cropped', image)
+
     # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -31,6 +34,8 @@ def detect_pins(image, data_loaded):
     return result
 
 def detect_clamp(image, data_loaded):
+
+    # detect_pins(image, data_loaded)
     
    # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -77,7 +82,7 @@ def detect_clamp(image, data_loaded):
                     cv2.line(result, (x3, y3), (x4, y4), (0, 0, 255), 2)
 
     # cv2.imshow('Detected Lines', result)
-    print(min_distance/ppcm)
+    # print(min_distance/ppcm)
 
     return min_distance/ppcm
 

@@ -1,11 +1,20 @@
 min_areas:
   red: 3000
   green: 1000
-  blue: 3000
+  blue: 1000
 
 video:
-  trackbar: true
+  trackbar: false
   save: false
+  log_values: true
+  get_gif: false 
+  input_dir: input_videos/
+  input_file: 50_245C.mp4
+  output_dir: output_videos/
+  output_name: 50_245C.mp4
+  log_dir: logs/
+  plot: true
+  excel: true
 
 mask: # HSV
   red:
@@ -18,17 +27,26 @@ mask: # HSV
     lower: [0, 255, 255]
     upper: [255, 0, 4]
 
+# video initial
+# scale_roi:
+#   x: 750
+#   y: 25
+#   w: 100
+#   h: 610
+
+# video 2.1 and 3.3
 scale_roi:
-  x: 750
+  x: 930
   y: 25
   w: 100
-  h: 610
+  h: 750
 
 pins_roi: # 250 pixels = 10 cm
   x: 220
   y: 0
   w: 250
   h: 170
+
 
 shear_scale_color: 'shear_scale.png'
 

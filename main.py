@@ -1,10 +1,13 @@
 import cv2
+from openpyxl import Workbook
 from utils.create_mask import apply_mask
 from utils.get_shear_scale import read_shear_scale, read_yaml
 from utils.get_shear_value import get_scale_colors, get_average_shear
-from utils.get_clamp_distance import detect_pins, detect_clamp
+from utils.get_clamp_distance import detect_clamp
+from utils.convert_avi import convert_avi_to_mp4
+from utils.convert_to_gif import convert_to_gif
+from utils.plot_graph import plot_graph, read_log_file
 import numpy as np
-
 
 # Function to handle trackbar changes
 def on_trackbar(position, input_video):
@@ -13,6 +16,11 @@ def on_trackbar(position, input_video):
 
 
 def main(video_name, data_loaded):
+    # if the video is in AVI format, convert it to MP4
+    if video_name.endswith(".avi"):
+        convert_avi_to_mp4(video_name, video_name[:-4])
+        video_name = video_name[:-4] + ".mp4"
+
     # read the video
     input_video = cv2.VideoCapture(video_name)
 
@@ -41,20 +49,41 @@ def main(video_name, data_loaded):
         data_loaded['video']['trackbar'] = False
         # Create a video writer object to save the output video
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        output_video = cv2.VideoWriter('output_video.mp4', fourcc, fps/16, (width, height))
+        video_file = data_loaded['video']['output_dir'] + data_loaded['video']['output_name']
+        output_video = cv2.VideoWriter(video_file, fourcc, fps/16, (width, height))
 
     # Create a trackbar
     if data_loaded['video']['trackbar']:
         cv2.createTrackbar('Frame', 'Video', 0, total_frames - 1, lambda x: on_trackbar(x, input_video))
 
+    # if log is enabled, create a file to write the log
+    if data_loaded['video']['log_values']:
+        if data_loaded['video']['excel']:
+            # Create a new workbook and select the active sheet
+            wb = Workbook()
+            ws = wb.active
+            # Set column headers
+            ws['A1'] = 'Frame'
+            ws['B1'] = 'A'
+            ws['C1'] = 'B'
+            ws['D1'] = 'C'
+            ws['E1'] = 'distance'
+        else:
+            # create a log file with the same name as the video in the log folder
+            log_file = open(data_loaded['video']['log_dir'] + data_loaded['video']['output_name'][:-4] + '.xlsx', 'w')
+            log_file.write('Frame A B C distance\n')
+
     old_distance = 0
+    i = 0
 
     # play the video
     while input_video.isOpened():
         ret, frame = input_video.read()
-        frame_copy = frame.copy()
+        
         if not ret:
             break
+
+        frame_copy = frame.copy()
 
         # Get the current position of the trackbar if it exists
         if data_loaded['video']['trackbar']:
@@ -81,13 +110,22 @@ def main(video_name, data_loaded):
         # get the distance between the pins
         # distance = detect_pins(frame_copy, data_loaded)
         distance = detect_clamp(frame_copy, data_loaded)
-        cv2.putText(frame, 'Distance: ' + str(distance) + ' cm' , (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 200, 0), 1, cv2.LINE_AA)
-        # cv2.putText(frame, 'Displacement Rate: ' + str((distance - old_distance)), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 200, 0), 1, cv2.LINE_AA)
+        cv2.putText(frame, 'Distance: ' + str(distance), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 200, 0), 1, cv2.LINE_AA)
+        # cv2.putText(frame, 'Displacement Rate: ' + str((distance - old_distance)/fps), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 200, 0), 1, cv2.LINE_AA)
 
         # Display the frame
         cv2.imshow('Video', frame)
 
+        # write the log
+        if data_loaded['video']['log_values']:
+            if data_loaded['video']['excel']:
+                row = [i, red_average_shear, green_average_shear, blue_average_shear, distance]
+                ws.append(row)
+            else:
+                log_file.write(str(i) + ' ' + str(red_average_shear) + ' ' + str(green_average_shear) + ' ' + str(blue_average_shear) + ' ' + str(distance) + '\n')
+
         old_distance = distance
+        i += 1
 
         if data_loaded['video']['save']:
             # Write the frame to the output video
@@ -105,9 +143,24 @@ def main(video_name, data_loaded):
     # close all windows
     cv2.destroyAllWindows()
 
+    if data_loaded['video']['log_values']:
+        if data_loaded['video']['excel']:
+            # Save the file
+            wb.save(data_loaded['video']['log_dir'] + data_loaded['video']['output_name'][:-4] + '.xlsx')
+            wb.close()
+        else:
+            log_file.close()
+
 
 if __name__ == '__main__':
-    file_name = 'input.mp4'
     cfg_file = 'cfg/config.yaml'
     data_loaded = read_yaml(cfg_file)
+    if data_loaded['video']['get_gif']:
+        data_loaded['video']['save'] = True
+    file_name = data_loaded['video']['input_dir'] + data_loaded['video']['input_file']
     main(file_name, data_loaded)
+    if data_loaded['video']['get_gif']:
+        convert_to_gif(data_loaded['video']['output_dir'] + data_loaded['video']['output_name'], data_loaded)
+    if data_loaded['video']['plot']:
+        log_data = read_log_file(data_loaded['video']['log_dir'] + data_loaded['video']['output_name'][:-4] + '.txt')
+        plot_graph(log_data, data_loaded)
