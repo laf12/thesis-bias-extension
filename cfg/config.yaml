@@ -6,15 +6,15 @@ min_areas:
 video:
   trackbar: false
   save: false
-  log_values: true
+  log_values: false
   get_gif: false 
   input_dir: input_videos/
-  input_file: 50_245C.mp4
+  input_file: 500_245C_2.mp4
   output_dir: output_videos/
-  output_name: 50_245C.mp4
+  output_name: 500_245C_2.mp4
   log_dir: logs/
-  plot: true
-  excel: true
+  plot: false
+  excel: false
 
 mask: # HSV
   red:
