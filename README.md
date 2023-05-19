@@ -2,6 +2,8 @@
 
 This repository includes the code for calculating the Average Shear Angle for zones A,B and C in the sample used in the Bias Extension Test.
 
+![Alt Text](github_viz/output_video.gif)
+
 ## Getting Started
 
 To run this code, follow the instructions below:
@@ -32,3 +34,4 @@ To run this code, paste the following command in your terminal or command prompt
 python main.py
 ```
 This will create an output video if `save` is set to `True` in the cfg file.
+
