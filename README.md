@@ -1,6 +1,6 @@
 # Forming Behavior Assessment of Commercially Available Carbon Fiber Reinforced Thermoplastic Tapes
 
-This repository includes the code for calculating the Average Shear Angle for zones A, B and C in the Bias Extension Test.
+This repository includes the code for calculating the Average Shear Angle for zones A, B and C in the Bias Extension test.
 For more information about this code, please read the thesis found [here](soon)
 
 ## Results
@@ -75,7 +75,7 @@ If you found this repository useful in your work, please consider citing the ass
   author = {Lara Fadel},
   title = {Forming Behavior Assessment of Commercially Available Carbon Fiber Reinforced Thermoplastic Tapes},
   year = {2023},
-  school = {Katholieke Universiteit Leuven },
+  school = {MSc Thesis, Katholieke Universiteit Leuven },
   address = {Leuven, Belgium}
 }
 ```
