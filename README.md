@@ -12,7 +12,7 @@ For more information about this code, please read the thesis found [here](soon)
 
 ## Getting Started
 
-To run this code, follow the instructions below:
+To run this code, please follow the instructions below:
 
 
 ### Prerequisites
