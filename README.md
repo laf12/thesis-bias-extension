@@ -71,7 +71,7 @@ In the provided `config.yaml` file, there are several flags that control the beh
 If you found this repository useful in your work, please consider citing the associated thesis:
 
 ```
-@phdthesis{laf-thesis,
+@thesis{laf-thesis,
   author = {Lara Fadel},
   title = {Forming Behavior Assessment of Commercially Available Carbon Fiber Reinforced Thermoplastic Tapes},
   year = {2023},
